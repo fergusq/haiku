@@ -1,0 +1,46 @@
+{
+	tavuta := localImportNamespace("tavuttaja.röd", dir=SOURCE_DIR).tavuta
+	teeMarkov := localImportNamespace("markov.röd", dir=SOURCE_DIR).teeMarkov
+}
+
+valitse(lista) {
+	return lista[abs(randomInteger()%#lista)]
+}
+
+teeSäe(n, tietokanta, alku="") {
+	sanat := []
+	
+	errprint("Luodaan säettä (n = ", n, ")...\n")
+	
+	while [ #[sanat() | tavuta(_)] < n ] do
+		errprint("\r", sanat&" ")
+		if [ #sanat = 0 ] do
+			if [ alku = "" ] do
+				sanat += valitse([keys(tietokanta)])
+			else
+				sanat += alku
+			done
+		else
+			sanat += valitse(tietokanta[sanat[-1]])
+		done
+		del sanat[:] if [ #[sanat() | tavuta(_)] > n ]
+	done
+	
+	errprint("\rSäe luotu!\n")
+	
+	return sanat&" "
+}
+
+main(aineisto, a, b, c, n) {
+	n = parseInteger(n)
+	tietokanta := teeMarkov(aineisto)
+	seq(1, n) | for i do
+		säkeet := []
+		säkeet += teeSäe(5, tietokanta, alku=a)
+		säkeet += teeSäe(7, tietokanta, alku=b)
+		säkeet += teeSäe(5, tietokanta, alku=c)
+		print("A")
+		säkeet() | enum() | print(`${_2%2} $_1`)
+		print("") unless [ i = n ]
+	done
+}

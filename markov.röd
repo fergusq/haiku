@@ -1,0 +1,12 @@
+teeMarkov(aineisto, tietokanta=new map) {
+	errprint("Luodaan tietokantaa...\n")
+	i := 0
+	readLines(aineisto) | lowerCase(_) | replace("[^a-zåäö ]", "") | split() | slide(2) | for sana1, sana2 do
+		errprint("\rn = ", i)
+		i ++
+		tietokanta[sana1] = [] unless [ tietokanta[sana1]? ]
+		tietokanta[sana1] += sana2
+	done
+	errprint("\rAineisto luotu!\n")
+	return tietokanta
+}

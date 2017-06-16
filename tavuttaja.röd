@@ -1,0 +1,57 @@
+{
+	vokaalit := "aeiouyäö"
+	konsonantit := "bcdfghjklmnpqrstvwx"
+}
+
+tavuta(säe) {
+	tavut := []
+	tavu := ""
+	v := FALSE
+	chars(säe) | for kirjain do
+		kirjain = lowerCase(kirjain)
+		if [ kirjain = " " ] do
+			tavut += tavu
+			tavu = ""
+			v = FALSE
+			continue
+		done
+		if [ kirjain = "-" ] do
+			tavut += tavu
+			tavu = "-"
+			v = FALSE
+			continue
+		done
+		if [ kirjain = "a" and tavu != "" and tavu[-1:] != "a" and tavu[-1:] in vokaalit ] do
+			tavut += tavu
+			tavu = "-a"
+			v = TRUE
+			continue
+		done
+		if [ kirjain = "o" and tavu != "" and tavu[-1:] != "o" and tavu[-1:] != "u" and tavu[-1:] in vokaalit ] do
+			tavut += tavu
+			tavu = "-o"
+			v = TRUE
+			continue
+		done
+		if [ v and kirjain in vokaalit and tavu != "" and tavu[-1:] in konsonantit ] do
+			tavut += tavu[:-1]
+			tavu = "-" .. tavu[-1:] .. kirjain
+			v = TRUE
+			continue
+		done
+		if [ kirjain in vokaalit and #tavu >= 2 and tavu[-1:] in vokaalit and tavu[-2:-1] in vokaalit ] do
+			tavut += tavu
+			tavu = "-" .. kirjain
+			v = TRUE
+			continue
+		done
+		if [ kirjain in vokaalit ] do
+			tavu .= kirjain
+			v = TRUE
+			continue
+		done
+		tavu .= kirjain
+	done
+	tavut += tavu
+	push(tavu) for tavu in tavut if [ tavu != "" ]
+}
