@@ -1,3 +1,7 @@
+{
+	tavuta := localImportNamespace("tavuttaja.röd", dir=SOURCE_DIR).tavuta
+}
+
 teeMarkov(aineisto, tietokanta=new map) {
 	errprint("Luodaan tietokantaa...\n")
 	i := 0
@@ -6,6 +10,22 @@ teeMarkov(aineisto, tietokanta=new map) {
 		i ++
 		tietokanta[sana1] = [] unless [ tietokanta[sana1]? ]
 		tietokanta[sana1] += sana2
+	done
+	errprint("\rAineisto luotu!\n")
+	return tietokanta
+}
+
+teeLausetietokanta(aineisto, tietokanta=new map) {
+	errprint("Luodaan tietokantaa...\n")
+	i := 0
+	v := "aeiouyäöå"
+	k := "bcdfghjklmnpqrstvwx"
+	readLines(aineisto) | lowerCase(_) | split(sep="[.!?]") | replace("[^a-zåäö ]", "", "^\\s+|\\s+$", "", "\\s+", " ") | for lause do
+		errprint("\rn = ", i)
+		i ++
+		tavuja := #splitMany(lause, sep=`(?<=[$v$k])(?=[$k][$v])|(?<=[$v&&[^a]])(?=[a])|(?<=[$v&&[^o]])(?=[o])|\s+`)
+		tietokanta[tavuja] = [] unless [ tietokanta[tavuja]? ]
+		tietokanta[tavuja] += lause
 	done
 	errprint("\rAineisto luotu!\n")
 	return tietokanta
